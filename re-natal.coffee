@@ -463,7 +463,7 @@ openXcode = (name) ->
         message
 
 generateRequireModulesCode = (modules) ->
-  jsCode = "var modules={'react-native': require('react-native'), 'react': require('react')};"
+  jsCode = "var modules={'react-native': require('react-native-desktop'), 'react': require('react')};"
   for m in modules
     jsCode += "modules['#{m}']=require('#{m}');";
   jsCode += '\n'
@@ -476,11 +476,11 @@ updateFigwheelUrls = (devEnvRoot, androidHost, iosHost) ->
   edit mainIosDevPath, [[figwheelUrlRx, "ws://#{iosHost}:"]]
 
 updateIosAppDelegate = (projName, iosHost) ->
-  appDelegatePath = "ios/#{projName}/AppDelegate.m"
+  appDelegatePath = "osx/#{projName}/AppDelegate.m"
   edit appDelegatePath, [[serverRx, "http://#{iosHost}"]]
 
 updateIosRCTWebSocketExecutor = (iosHost) ->
-  RCTWebSocketExecutorPath = "node_modules/react-native/Libraries/WebSocket/RCTWebSocketExecutor.m"
+  RCTWebSocketExecutorPath = "node_modules/react-native-desktop/Libraries/WebSocket/RCTWebSocketExecutor.m"
   edit RCTWebSocketExecutorPath, [[serverRx, "http://#{iosHost}"]]
 
 generateDevScripts = () ->
@@ -503,10 +503,8 @@ generateDevScripts = () ->
     androidDevHost = config.androidHost
     iosDevHost = config.iosHost
 
-    fs.writeFileSync 'index.ios.js', "#{moduleMap}require('figwheel-bridge').withModules(modules).start('#{projName}','ios','#{iosDevHost}');"
-    log 'index.ios.js was regenerated'
-    fs.writeFileSync 'index.android.js', "#{moduleMap}require('figwheel-bridge').withModules(modules).start('#{projName}','android','#{androidDevHost}');"
-    log 'index.android.js was regenerated'
+    fs.writeFileSync 'index.osx.js', "#{moduleMap}require('figwheel-bridge').withModules(modules).start('#{projName}','ios','#{iosDevHost}');"
+    log 'index.osx.js was regenerated'
 
     updateIosAppDelegate(projName, iosDevHost)
     updateIosRCTWebSocketExecutor(iosDevHost)
